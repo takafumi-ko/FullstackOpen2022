@@ -1,7 +1,7 @@
 function App() {
     const course = 'Half Stack application development'
 
-    const messages = [
+    const parts = [
         {
             part: 'Fundamentals of React',
             exercises: 10
@@ -18,8 +18,8 @@ function App() {
     return (
         <div>
             <Header course={course}/>
-            <Content messages={messages}/>
-            <Total messages={messages}/>
+            <Content messages={parts}/>
+            <Total messages={parts}/>
         </div>
     )
 }
