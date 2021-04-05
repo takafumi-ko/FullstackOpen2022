@@ -12,15 +12,21 @@ function App() {
         },
         {
             part: 'State of a component',
-            exercises: 14
+            exercises: 16
         }
     ]
+
+    const handleClick = ()=> {
+        console.log("clicked")
+    }
+
     return (
-        <div>
-            <Header course={course}/>
-            <Content messages={parts}/>
-            <Total messages={parts}/>
-        </div>
+        <>
+            <Header course={course} />
+            <Content messages={parts} />
+            <Total messages={parts} />
+            <button onClick={handleClick}>plus</button>
+        </>
     )
 }
 
@@ -31,7 +37,6 @@ const Header = (props) => {
 }
 
 const Part = (props) => {
-
     return (
         <p>
             {props.message.part} {props.message.exercises}
