@@ -39,18 +39,10 @@ const Part = (props) => {
     )
 }
 
-// コンポーネントで蚊変数のコンポーネントを返す方法は？
 const Content = (props) => {
-    const messages = props.messages
-
-    return (
-        <>
-            <Part message={messages[0]}/>
-            <Part message={messages[1]}/>
-            <Part message={messages[2]}/>
-        </>
+    return props.messages.map(message =>
+        <Part message={message}/>
     )
-
 }
 
 const Total = (props) => {
