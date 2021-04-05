@@ -6,9 +6,6 @@ const App = () => {
     const [neutral, setNeutral] = useState(0)
     const [bad, setBad] = useState(0)
 
-
-
-
     return (
         <>
             <Header text={'give feedback'}/>
@@ -31,19 +28,24 @@ const Button = (props) => (
     </button>
 )
 
+const Statistic = (props) => {
+    return (
+        <p>{props.text} {props.value}</p>
+    )
+}
+
 const Statistics = (props) => {
     let good = props.good
     let neutral = props.neutral
     let bad = props.bad
     let numOfFeedback = good + neutral + bad
 
-    if(numOfFeedback===0)return <p>No feedback given</p>
-    return(
+    if (numOfFeedback === 0) return <p>No feedback given</p>
+    return (
         <>
-            <p>good {good}</p>
-            <p>neutral {neutral}</p>
-            <p>bad {bad}</p>
-            <p>all {good+bad}</p>
+            <Statistic text="good" value={good}/>
+            <Statistic text="neutral" value={neutral}/>
+            <Statistic text="bad" value={bad}/>
             <p>average {(good - bad) / numOfFeedback}</p>
             <p>positive {good / numOfFeedback} %</p>
         </>
