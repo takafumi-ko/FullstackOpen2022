@@ -5,29 +5,21 @@ const App = () => {
     const [good, setGood] = useState(0)
     const [neutral, setNeutral] = useState(0)
     const [bad, setBad] = useState(0)
-    const calculateAll = (g,b)=>g-b
-    const calculateAverage = (g,n,b)=>{
-        let numOfFeedback = g+n+b
-        return (g-b)/numOfFeedback
-    }
-    const calcPositive =(g,n,b)=>{
-        let numOfFeedback = g+n+b
-        return g/numOfFeedback
-    }
+
+
+
 
     return (
         <>
             <Header text={'give feedback'}/>
-            <Button handleClick={() => setGood(good+1)} text="good" />
-            <Button handleClick={() => setNeutral(neutral+1)} text="neural" />
-            <Button handleClick={() => setBad(bad + 1)} text="bad" />
+            <Button handleClick={() => setGood(good + 1)} text="good"/>
+            <Button handleClick={() => setNeutral(neutral + 1)} text="neural"/>
+            <Button handleClick={() => setBad(bad + 1)} text="bad"/>
             <Header text={'statistics'}/>
             <p>good {good}</p>
             <p>neutral {neutral}</p>
             <p>bad {bad}</p>
-            <p>all {calculateAll(good,bad)}</p>
-            <p>average {calculateAverage(good,neutral,bad)}</p>
-            <p>positive {calcPositive(good,neutral,bad)} %</p>
+            <Statistics good={good} neutral={neutral} bad={bad}/>
         </>
     )
 }
@@ -41,4 +33,20 @@ const Button = (props) => (
         {props.text}
     </button>
 )
+
+const Statistics = (props) => {
+    let good = props.good
+    let neutral = props.neutral
+    let bad = props.bad
+    let numOfFeedback = good + neutral + bad
+
+    return(
+        <>
+            <p>all {good+bad}</p>
+            <p>average {(good - bad) / numOfFeedback}</p>
+            <p>positive {good / numOfFeedback} %</p>
+        </>
+    )
+
+}
 export default App
