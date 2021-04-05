@@ -16,9 +16,6 @@ const App = () => {
             <Button handleClick={() => setNeutral(neutral + 1)} text="neural"/>
             <Button handleClick={() => setBad(bad + 1)} text="bad"/>
             <Header text={'statistics'}/>
-            <p>good {good}</p>
-            <p>neutral {neutral}</p>
-            <p>bad {bad}</p>
             <Statistics good={good} neutral={neutral} bad={bad}/>
         </>
     )
@@ -40,8 +37,12 @@ const Statistics = (props) => {
     let bad = props.bad
     let numOfFeedback = good + neutral + bad
 
+    if(numOfFeedback===0)return <p>No feedback given</p>
     return(
         <>
+            <p>good {good}</p>
+            <p>neutral {neutral}</p>
+            <p>bad {bad}</p>
             <p>all {good+bad}</p>
             <p>average {(good - bad) / numOfFeedback}</p>
             <p>positive {good / numOfFeedback} %</p>
