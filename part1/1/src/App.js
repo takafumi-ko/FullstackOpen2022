@@ -1,3 +1,4 @@
+import Course from "./components/Course";
 
 function App() {
     const courses = [
@@ -16,7 +17,7 @@ function App() {
                     id: 2
                 },
                 {
-                    name: 'State of a component',
+                    name: 'State of a components',
                     exercises: 14,
                     id: 3
                 },
@@ -47,45 +48,6 @@ function App() {
 
 
     return courses.map(course=><Course course={course}/>)
-}
-const Course = (props) =>{
-    return(
-        <>
-            <Header course={props.course.name} />
-            <Content parts={props.course.parts} />
-            <Total parts={props.course.parts}/>
-        </>
-    )
-}
-
-const Header = (props) => {
-    return (
-        <h1>{props.course}</h1>
-    )
-}
-
-const Part = (props) => {
-    return (
-        <p>
-            {props.message.name} {props.message.exercises}
-        </p>
-    )
-}
-
-const Content = (props) => {
-    return props.parts.map(part =>
-        <Part message={part}/>
-    )
-}
-
-const Total = (props) => {
-    const parts = props.parts
-
-    const sum = parts.reduce((acc, part) => acc + Number(part.exercises), 0)
-
-    return (
-        <b>Total of exercises {sum}</b>
-    )
 }
 
 export default App;
