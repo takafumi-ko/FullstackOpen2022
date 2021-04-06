@@ -1,31 +1,35 @@
+
 function App() {
-    const course = 'Half Stack application development'
-
-    const parts = [
-        {
-            part: 'Fundamentals of React',
-            exercises: 10
-        },
-        {
-            part: 'Using props to pass data',
-            exercises: 7
-        },
-        {
-            part: 'State of a component',
-            exercises: 16
-        }
-    ]
-
-    const handleClick = ()=> {
-        console.log("clicked")
+    const course = {
+        id: 1,
+        name: 'Half Stack application development',
+        parts: [
+            {
+                name: 'Fundamentals of React',
+                exercises: 10,
+                id: 1
+            },
+            {
+                name: 'Using props to pass data',
+                exercises: 7,
+                id: 2
+            },
+            {
+                name: 'State of a component',
+                exercises: 14,
+                id: 3
+            }
+        ]
     }
 
-    return (
+    return <Course course={course} />
+}
+const Course = (props) =>{
+    console.log(props)
+    return(
         <>
-            <Header course={course} />
-            <Content messages={parts} />
-            <Total messages={parts} />
-            <button onClick={handleClick}>plus</button>
+            <Header course={props.course.name} />
+            <Content parts={props.course.parts} />
         </>
     )
 }
@@ -39,21 +43,14 @@ const Header = (props) => {
 const Part = (props) => {
     return (
         <p>
-            {props.message.part} {props.message.exercises}
+            {props.message.name} {props.message.exercises}
         </p>
     )
 }
 
 const Content = (props) => {
-    return props.messages.map(message =>
-        <Part message={message}/>
-    )
-}
-
-const Total = (props) => {
-    const messages = props.messages
-    return (
-        <p>Number of exercises {messages[0].exercises + messages[1].exercises + messages[2].exercises}</p>
+    return props.parts.map(part =>
+        <Part message={part}/>
     )
 }
 
