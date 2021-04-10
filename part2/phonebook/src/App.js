@@ -1,32 +1,38 @@
 import React, {useState} from 'react'
 
 const App = () => {
-    const [persons, setPersons] = useState([
-        {name: 'Arto Hellas'}
-    ])
+    const [persons, setPersons] = useState([])
     const [newName, setNewName] = useState('')
+    const [newNumber, setNewNumber] = useState('')
 
     const AddPerson = (event) => {
         event.preventDefault()
-        console.log('button clicked', newName)
+        console.log('button clicked', newName, ' ', newNumber)
 
-        if(persons.filter(person=>person.name === newName).length){
+        if (persons.filter(person => person.name === newName).length) {
             window.alert(`${newName} is already added to phonebook`);
             setNewName('')
+            setNewNumber('')
             return
         }
 
         const newPerson = {
-            name: newName
+            name: newName,
+            number: newNumber
         }
         setPersons(persons.concat(newPerson))
         setNewName('')
+        setNewNumber('')
+
     }
 
-    const handlePersonChange = (event) => {
-        // console.log(event.target.value)
+    const handleNameChange = (event) => {
         setNewName(event.target.value)
     }
+    const handleNumberChange = (event) => {
+        setNewNumber(event.target.value)
+    }
+
 
     const ShowPersons = (props) => {
         return props.persons.map(person =>
@@ -37,20 +43,21 @@ const App = () => {
     const Person = (props) => {
         return (
             <p>
-                {props.person.name}
+                {props.person.name} {props.person.number}
             </p>
+
         )
     }
-
 
     return (
         <div>
             <h2>Phonebook</h2>
             <form onSubmit={AddPerson}>
                 <div>
-                    name: <input value={newName}
-                                 onChange={handlePersonChange}
-                />
+                    name: <input value={newName} onChange={handleNameChange}/>
+                </div>
+                <div>
+                    number: <input value={newNumber} onChange={handleNumberChange}/>
                 </div>
                 <div>
                     <button type="submit">add</button>
@@ -60,8 +67,6 @@ const App = () => {
             <h2>Numbers</h2>
 
             <ShowPersons persons={persons}/>
-
-            <div>debug: {newName}</div>
         </div>
     )
 }
