@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import axios from 'axios'
+import phonebookService from "./components/phonebookService";
 
 const App = () => {
     const personsState = useState([])
@@ -11,11 +11,7 @@ const App = () => {
     const useFilterState = useState(false)
 
     useEffect(() => {
-        console.log('effect')
-        axios.get('http://localhost:3001/persons').then(response => {
-            console.log('promise fulfilled',response.data)
-            personsState[1](response.data)
-        })
+        phonebookService.getAll().then(data=>personsState[1](data))
     }, [])
 
     return (
@@ -67,13 +63,12 @@ const PersonForm =(props)=> {
             number: props.newNumberState[0]
         }
 
-        axios
-            .post('http://localhost:3001/persons', newPerson)
-            .then(response => {
-                props.personState[1](props.personState[0].concat(newPerson))
-                props.newNameState[1]('')
-                props.newNumberState[1]('')
-            })
+        phonebookService.create(newPerson).then(data=>{
+            props.personState[1](props.personState[0].concat(data))
+            props.newNameState[1]('')
+            props.newNumberState[1]('')
+        }).catch(error=>console.log('fail',error))
+
     }
 
     const handleNameChange = (event) => {
