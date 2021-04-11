@@ -25,6 +25,7 @@ function App() {
 
 const Filter = (props) => {
     const onFilterChange = (event) => {
+        event.preventDefault()
         props.filterState[1](event.target.value)
     }
     return <input value={props.filterState[0]} onChange={onFilterChange}/>;
@@ -56,7 +57,16 @@ const Languages = (props) => {
 }
 
 const ShowCountries = (props) => {
-    const countries = props.countries.filter(country => country.name.includes(props.filterState[0]))
+    const countries = props.countries
+        .filter(country => country.name.toLowerCase()
+            .includes(props.filterState[0]))
+
+    const OnClickShow = (e) => {
+        e.preventDefault();
+        const name = e.currentTarget.getAttribute('nameVal');
+        console.log(name)
+        props.filterState[1](name)
+    };
 
     if (countries.length === 1) {
         return <ShowCountry country={countries[0]}/>
@@ -71,7 +81,10 @@ const ShowCountries = (props) => {
     } else {
         return countries.map(country => {
             return (
-                <p>{country.name}</p>
+                <p>
+                    {country.name}
+                    <button onClick={OnClickShow} nameVal={country.name}>show</button>
+                </p>
             )
         })
     }
