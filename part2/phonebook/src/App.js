@@ -64,11 +64,16 @@ const PersonForm =(props)=> {
 
         const newPerson = {
             name: props.newNameState[0],
-            number: props.newNumberState[1]
+            number: props.newNumberState[0]
         }
-        props.personState[1](props.personState[0].concat(newPerson))
-        props.newNameState[1]('')
-        props.newNumberState[1]('')
+
+        axios
+            .post('http://localhost:3001/persons', newPerson)
+            .then(response => {
+                props.personState[1](props.personState[0].concat(newPerson))
+                props.newNameState[1]('')
+                props.newNumberState[1]('')
+            })
     }
 
     const handleNameChange = (event) => {
