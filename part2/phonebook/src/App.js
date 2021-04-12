@@ -11,7 +11,7 @@ const App = () => {
     const useFilterState = useState(false)
 
     useEffect(() => {
-        phonebookService.getAll().then(data=>personsState[1](data))
+        phonebookService.getAll().then(data => personsState[1](data))
     }, [])
 
     return (
@@ -19,7 +19,7 @@ const App = () => {
             <h2>Phonebook</h2>
             <Filter useFilterState={useFilterState} filterState={filterState}/>
             <h2>Ass a new</h2>
-            <PersonForm newNameState={newNameState} newNumberState={newNumberState} personState={personsState}/>
+            <PersonForm newNameState={newNameState} newNumberState={newNumberState} personsState={personsState}/>
             <h2>Numbers</h2>
             <ShowPersons personsState={personsState} useFilterSate={useFilterState} filterState={filterState}/>
         </div>
@@ -46,15 +46,36 @@ const Filter = (props) => {
     )
 }
 
-const PersonForm =(props)=> {
+const PersonForm = (props) => {
     const AddPerson = (event) => {
         event.preventDefault()
         console.log('button clicked', props.newNameState[0], ' ', props.newNumberState[0])
 
-        if (props.personState[0].filter(person => person.name === props.newNameState[0]).length) {
-            window.alert(`${props.newNameState[0]} is already added to phonebook`);
-            props.newNameState[1]('')
-            props.newNumberState[1]('')
+        if (!props.newNameState[0]) {
+            window.alert(`The name input field is empty`);
+            return
+        }
+        if (!props.newNumberState[0]) {
+            window.alert(`The number input field is empty`);
+            return
+        }
+
+        const matchedPerson = props.personsState[0].filter(person => person.name === props.newNameState[0])
+        if (matchedPerson.length === 1) {
+            const person = matchedPerson[0]
+
+            const message = `${person.name} is already added to phonebook,replace the old number with a new one?`
+            if (window.confirm(message)) {
+                const newPerson = {...person, number: props.newNumberState[0]}
+
+                phonebookService.update(person.id, newPerson).then(data => {
+                    props.personsState[1](props.personsState[0].map(p =>
+                        p.id !== person.id ? p : data)
+                    )
+                })
+                props.newNameState[1]('')
+                props.newNumberState[1]('')
+            }
             return
         }
 
@@ -63,11 +84,11 @@ const PersonForm =(props)=> {
             number: props.newNumberState[0]
         }
 
-        phonebookService.create(newPerson).then(data=>{
-            props.personState[1](props.personState[0].concat(data))
+        phonebookService.create(newPerson).then(data => {
+            props.personsState[1](props.personsState[0].concat(data))
             props.newNameState[1]('')
             props.newNumberState[1]('')
-        }).catch(error=>console.log('fail',error))
+        }).catch(error => console.log('fail', error))
 
     }
 
@@ -92,14 +113,24 @@ const PersonForm =(props)=> {
 }
 
 const ShowPersons = (props) => {
+    const OnDeleteClick = (id) => {
+        phonebookService.deletePerson(id).then(data => props.personsState[1](data))
+    };
     const persons = !props.useFilterSate[0] ? props.personsState[0] : props.personsState[0].filter(person => person.name.includes(props.filterState[0]))
-    return persons.map(person => <Person key={person.name} person={person}/>)
+    return persons.map(person => <Person key={person.name} person={person} OnDeleteClick={OnDeleteClick}/>)
 }
 
 const Person = (props) => {
+    const message = `Delete ${props.person.name}?`
+    const OnClick = () => {
+        if (window.confirm(message)) {
+            props.OnDeleteClick(props.person.id)
+        }
+    }
     return (
         <p>
             {props.person.name} {props.person.number}
+            <button onClick={OnClick}>delete</button>
         </p>
     )
 }
