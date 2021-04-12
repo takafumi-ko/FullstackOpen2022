@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from 'react'
 import phonebookService from "./components/phonebookService";
+import Notification from "./components/Notification";
 
 const App = () => {
     const personsState = useState([])
-
     const newNameState = useState('')
     const newNumberState = useState('')
-
     const filterState = useState('')
     const useFilterState = useState(false)
+
+    const messageState = useState('')
 
     useEffect(() => {
         phonebookService.getAll().then(data => personsState[1](data))
@@ -17,9 +18,11 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
+            <Notification message={messageState[0]}/>
             <Filter useFilterState={useFilterState} filterState={filterState}/>
             <h2>Ass a new</h2>
-            <PersonForm newNameState={newNameState} newNumberState={newNumberState} personsState={personsState}/>
+            <PersonForm newNameState={newNameState} newNumberState={newNumberState} personsState={personsState}
+                        messageState={messageState}/>
             <h2>Numbers</h2>
             <ShowPersons personsState={personsState} useFilterSate={useFilterState} filterState={filterState}/>
         </div>
@@ -68,10 +71,25 @@ const PersonForm = (props) => {
             if (window.confirm(message)) {
                 const newPerson = {...person, number: props.newNumberState[0]}
 
-                phonebookService.update(person.id, newPerson).then(data => {
-                    props.personsState[1](props.personsState[0].map(p =>
-                        p.id !== person.id ? p : data)
-                    )
+                phonebookService.update(person.id, newPerson)
+                    .then(data => {
+                        props.personsState[1](props.personsState[0].map(p =>
+                            p.id !== person.id ? p : data)
+                        )
+                        props.messageState[1](
+                            `Updated '${person.name}'`
+                        )
+                        setTimeout(() => {
+                            props.messageState[1](null)
+                        }, 3000)
+
+                    }).catch(error => {
+                    // props.messageState[1](
+                    //     `Person '${person.name}' was already removed from server`
+                    // )
+                    // setTimeout(() => {
+                    //     props.messageState[1](null)
+                    // }, 5000)
                 })
                 props.newNameState[1]('')
                 props.newNumberState[1]('')
@@ -88,6 +106,13 @@ const PersonForm = (props) => {
             props.personsState[1](props.personsState[0].concat(data))
             props.newNameState[1]('')
             props.newNumberState[1]('')
+
+            props.messageState[1](
+                `Added '${newPerson.name}'`
+            )
+            setTimeout(() => {
+                props.messageState[1](null)
+            }, 3000)
         }).catch(error => console.log('fail', error))
 
     }
