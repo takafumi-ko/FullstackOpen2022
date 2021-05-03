@@ -113,7 +113,13 @@ const PersonForm = (props) => {
             setTimeout(() => {
                 props.messageState[1](null)
             }, 3000)
-        }).catch(error => console.log('fail', error))
+        }).catch(error => {
+            props.messageState[1](error.response.data.error)
+            setTimeout(() => {
+                props.messageState[1](null)
+            }, 3000)
+            console.log(error.response.data)
+        })
 
     }
 
