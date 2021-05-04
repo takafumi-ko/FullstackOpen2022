@@ -1,6 +1,3 @@
-const dummy = (blogs) => {
-    return 1
-}
 
 const totalLikes = (blogs)=>{
     if (blogs == null || blogs.length == null){
@@ -13,5 +10,5 @@ const totalLikes = (blogs)=>{
 }
 
 module.exports = {
-    dummy,totalLikes
+    totalLikes
 }
