@@ -71,6 +71,27 @@ test('Exercise 4.12', async () => {
     await api.post('/api/blogs').send(newBlog).expect(400)
 
 })
+
+test('Exercise 4.13 verify get by id work', async () => {
+
+    const sampleBlogs = await helper.blogsInDb()
+
+    const response = await api.get(`/api/blogs/${sampleBlogs[0].id}`).expect(200)
+
+    expect(response.body).toEqual(sampleBlogs[0])
+})
+
+test('Exercise 4.13 verify delete by id work', async () => {
+    const sampleBlogs = await helper.blogsInDb()
+
+    await api.delete(`/api/blogs/${sampleBlogs[0].id}`).expect(204)
+
+    const blogs = await helper.blogsInDb()
+    expect(blogs).toHaveLength(helper.initialBlogs.length - 1)
+
+    expect(blogs).not.toContainEqual(sampleBlogs)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
