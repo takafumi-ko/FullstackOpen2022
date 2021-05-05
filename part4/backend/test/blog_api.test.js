@@ -54,12 +54,11 @@ test('Exercise 4.11. verifies missing property is like ,it wil will be set 0 by 
         url: "dummy",
     }
 
-    await api.post('/api/blogs').send(newBlog).expect(201)
+    const postResponse = await api.post('/api/blogs').send(newBlog).expect(201)
+    await api.get(`/api/blogs/${postResponse.body.id}`).expect(200)
 
-    //TODO use after implement getById
-    // const response = await api.get(`/api/blogs/${postResponse.body.id}`).expect(200)
-    const response = await api.get('/api/blogs')
-    let targetBlog = response.body.slice(-1)[0];
+    const blogs = await helper.blogsInDb()
+    let targetBlog = blogs.slice(-1)[0];
     expect(targetBlog.likes).toBe(0)
 })
 
@@ -90,6 +89,20 @@ test('Exercise 4.13 verify delete by id work', async () => {
     expect(blogs).toHaveLength(helper.initialBlogs.length - 1)
 
     expect(blogs).not.toContainEqual(sampleBlogs)
+})
+
+test('Exercise 4.14 verify update like', async () => {
+    const after = 10
+    const newBlog = {...helper.initialBlogs[0], likes: after}
+
+    const sampleBlogs = await helper.blogsInDb()
+
+    await api.put(`/api/blogs/${sampleBlogs[0].id}`)
+        .send(newBlog).expect(201)
+
+    const blogs = await helper.blogsInDb()
+
+    expect(blogs[0].likes).toEqual(after)
 })
 
 afterAll(() => {
