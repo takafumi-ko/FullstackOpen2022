@@ -62,6 +62,15 @@ test('Exercise 4.11. verifies missing property is like ,it wil will be set 0 by 
     let targetBlog = response.body.slice(-1)[0];
     expect(targetBlog.likes).toBe(0)
 })
+
+test('Exercise 4.12', async () => {
+    const newBlog = {
+        url: "dummy",
+    }
+
+    await api.post('/api/blogs').send(newBlog).expect(400)
+
+})
 afterAll(() => {
     mongoose.connection.close()
 })
