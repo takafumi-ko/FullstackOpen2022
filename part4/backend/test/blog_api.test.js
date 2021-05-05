@@ -46,6 +46,22 @@ test('Exercise 4.10. verifies blog post ', async () => {
     expect(response.body).toContainEqual(expectedBlog)
 
 })
+
+test('Exercise 4.11. verifies missing property is like ,it wil will be set 0 by default', async () => {
+    const newBlog = {
+        title: "dummy",
+        author: "dummy",
+        url: "dummy",
+    }
+
+    await api.post('/api/blogs').send(newBlog).expect(201)
+
+    //TODO use after implement getById
+    // const response = await api.get(`/api/blogs/${postResponse.body.id}`).expect(200)
+    const response = await api.get('/api/blogs')
+    let targetBlog = response.body.slice(-1)[0];
+    expect(targetBlog.likes).toBe(0)
+})
 afterAll(() => {
     mongoose.connection.close()
 })
