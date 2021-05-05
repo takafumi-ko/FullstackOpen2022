@@ -28,6 +28,24 @@ test('Exercise 4.9. verifies that the unique identifier property of the blog pos
 
 })
 
+test('Exercise 4.10. verifies blog post ', async () => {
+    const newBlog = {
+        title: "dummy",
+        author: "dummy",
+        url: "dummy",
+        likes: 0
+    }
+    const postResponse = await api.post('/api/blogs').send(newBlog).expect(201)
+
+    const response = await api.get('/api/blogs')
+
+    expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
+
+    const expectedBlog = {...newBlog, id: postResponse.body.id}
+
+    expect(response.body).toContainEqual(expectedBlog)
+
+})
 afterAll(() => {
     mongoose.connection.close()
 })
