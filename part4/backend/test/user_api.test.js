@@ -59,6 +59,35 @@ describe('when there is initially one user in db', () => {
         const usersAtEnd = await helper.usersInDb()
         expect(usersAtEnd).toHaveLength(usersAtStart.length)
     })
+
+    describe('Exercises 4.16* username and password must be given', () => {
+        test('less password length', async () => {
+            const newUser = {
+                username: 'takafumi',
+                name: 'Ta Ko',
+                password: 'gu',
+            }
+
+            await api
+                .post('/api/users')
+                .send(newUser)
+                .expect(400)
+        })
+
+        test('enough password length ', async () => {
+            const newUser = {
+                username: 'takafumi2',
+                name: 'Ta Ko',
+                password: 'gum',
+            }
+
+            await api
+                .post('/api/users')
+                .send(newUser)
+                .expect(200)
+                .expect('Content-Type', /application\/json/)
+        })
+    })
 })
 
 afterAll(() => {
