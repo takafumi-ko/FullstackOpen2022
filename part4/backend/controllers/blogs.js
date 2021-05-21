@@ -29,7 +29,7 @@ blogsRouter.post('/', async (request, response) => {
 })
 
 blogsRouter.get('/:id', async (request, response) => {
-    Blog.findById(request.params.id).populate('User')
+    Blog.findById(request.params.id).populate('user')
         .then(result => {
             if (result) {
                 response.status(200).json(result)
@@ -40,9 +40,19 @@ blogsRouter.get('/:id', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
-    Blog.findByIdAndRemove(request.params.id).then(() => {
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    const userid = decodedToken.id
+    const blog = await Blog.findById(request.params.id).populate('user', {username: 1, name: 1})
+    if (blog == null) {
+        response.status(404).end()
+    }
+    console.log(blog.user._id)
+    if (blog.user._id.toString() === userid.toString()) {
+        await Blog.findByIdAndRemove(userid)
         response.status(204).end()
-    })
+    } else {
+        response.status(401).end()
+    }
 })
 
 //only update likes
