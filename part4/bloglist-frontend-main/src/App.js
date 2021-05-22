@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import Login from "./components/Login";
@@ -6,6 +6,7 @@ import Logout from "./components/Logout";
 import NewBlog from "./components/NewBlog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
+import TogglableDetail from "./components/TogglableDetail";
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
@@ -52,8 +53,9 @@ const App = () => {
             </Togglable>
             {
                 blogs.map(blog =>
-                    <Blog key={blog.id} blog={blog}/>
-                )}
+                    <Blog key={blog.id} blog={blog} detail={true}/>
+                )
+            }
         </div>
     )
 
