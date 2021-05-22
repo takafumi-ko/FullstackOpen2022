@@ -23,4 +23,8 @@ const setToken = (token) => {
     localToken = `bearer ${token}`
 }
 
-export default {getAll, setToken, create}
+const like = async (data) => {
+    await axios.put(baseUrl + "/" + data.id, data)
+}
+
+export default {getAll, setToken, create, like}
