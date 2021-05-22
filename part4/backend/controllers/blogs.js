@@ -24,29 +24,30 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
     user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()
 
-    response.json(savedBlog)
+    response.status(201).json(savedBlog)
 })
 
 blogsRouter.get('/:id', async (request, response) => {
-    Blog.findById(request.params.id).populate('user')
-        .then(result => {
-            if (result) {
-                response.status(200).json(result)
-            } else {
-                response.status(404).end()
-            }
-        })
+    const result = await Blog.findById(request.params.id).populate('user', {username: 1, name: 1})
+    if (result) {
+        response.status(200).json(result)
+    } else {
+        response.status(404).end()
+    }
 })
 
 blogsRouter.delete('/:id', userExtractor, async (request, response) => {
-    const userid = request.user.id
+    if (!request.token || !request.user.id) {
+        return response.status(401).json({error: 'token missing or invalid'})
+    }
     const blog = await Blog.findById(request.params.id).populate('user', {username: 1, name: 1})
     if (blog == null) {
         response.status(404).end()
     }
-    console.log(blog.user._id)
-    if (blog.user._id.toString() === userid.toString()) {
-        await Blog.findByIdAndRemove(userid)
+    console.log(blog.user.id)
+    if (blog.user._id.toString() === request.user.id.toString()) {
+        const result = await Blog.findByIdAndRemove(blog.id)
+        console.log(result)
         response.status(204).end()
     } else {
         response.status(401).end()

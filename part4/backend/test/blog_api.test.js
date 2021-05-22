@@ -4,12 +4,39 @@ const app = require('../app')
 
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
+let user
+let token
 
+beforeAll(async () => {
+    await User.deleteMany({})
+
+    const newUser = {
+        "username": "root",
+        "name": "Superuser",
+        "password": "salainen"
+    }
+    user = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+    const loginInfo = await api.post('/api/login')
+        .send(newUser)
+        .expect(200)
+    token = "bearer " + loginInfo.body.token
+    console.log('outer before all')
+})
 beforeEach(async () => {
+    // TODO promise
     await Blog.deleteMany({})
+
     const blogs = helper.initialBlogs
-    const blogObjects = blogs.map(blog => new Blog(blog))
+    const blogObjects = blogs.map(blog => {
+            return new Blog({...blog, user: user.body.id})
+        }
+    )
     const promiseArray = blogObjects.map(blog => blog.save())
     await Promise.all(promiseArray)
 })
@@ -35,13 +62,16 @@ test('Exercise 4.10. verifies blog post ', async () => {
         url: "dummy",
         likes: 0
     }
-    const postResponse = await api.post('/api/blogs').send(newBlog).expect(201)
+    const postResponse = await api.post('/api/blogs').set('Authorization', token)
+        .send(newBlog).expect(201)
 
     const response = await api.get('/api/blogs')
 
     expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
 
-    const expectedBlog = {...newBlog, id: postResponse.body.id}
+    const userForMatch = {...user.body}
+    delete userForMatch.blogs
+    const expectedBlog = {...newBlog, id: postResponse.body.id, user: userForMatch}
 
     expect(response.body).toContainEqual(expectedBlog)
 
@@ -54,7 +84,7 @@ test('Exercise 4.11. verifies missing property is like ,it wil will be set 0 by 
         url: "dummy",
     }
 
-    const postResponse = await api.post('/api/blogs').send(newBlog).expect(201)
+    const postResponse = await api.post('/api/blogs').send(newBlog).set('Authorization', token).expect(201)
     await api.get(`/api/blogs/${postResponse.body.id}`).expect(200)
 
     const blogs = await helper.blogsInDb()
@@ -66,9 +96,7 @@ test('Exercise 4.12', async () => {
     const newBlog = {
         url: "dummy",
     }
-
-    await api.post('/api/blogs').send(newBlog).expect(400)
-
+    await api.post('/api/blogs').send(newBlog).set('Authorization', token).expect(400)
 })
 
 test('Exercise 4.13 verify get by id work', async () => {
@@ -77,13 +105,16 @@ test('Exercise 4.13 verify get by id work', async () => {
 
     const response = await api.get(`/api/blogs/${sampleBlogs[0].id}`).expect(200)
 
-    expect(response.body).toEqual(sampleBlogs[0])
+    const userForMatch = {...user.body}
+    delete userForMatch.blogs
+
+    expect(response.body).toEqual({...sampleBlogs[0], user: userForMatch})
 })
 
 test('Exercise 4.13 verify delete by id work', async () => {
     const sampleBlogs = await helper.blogsInDb()
 
-    await api.delete(`/api/blogs/${sampleBlogs[0].id}`).expect(204)
+    await api.delete(`/api/blogs/${sampleBlogs[0].id}`).set('Authorization', token).expect(204)
 
     const blogs = await helper.blogsInDb()
     expect(blogs).toHaveLength(helper.initialBlogs.length - 1)
