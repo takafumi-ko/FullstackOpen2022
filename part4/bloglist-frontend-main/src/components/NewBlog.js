@@ -15,16 +15,19 @@ const NewBlog = (props) => {
             url: url
         }
         const result = await blogsService.create(blog)
-        console.log(result)
         if (result != null) {
-            props.setBlogs({...props.blogs, result})
+            props.setBlogs(props.blogs.concat(result))
             props.setMessage({
                 type: "success",
                 messageText: `a new blog ${result.title} by ${result.author} added`
             })
+            setTitle('')
+            setAuthor('')
+            setUrl('')
             setTimeout(() => {
                 props.setMessage(null)
             }, 5000)
+            props.onCreate()
         }
     };
 
