@@ -6,7 +6,6 @@ import Logout from "./components/Logout";
 import NewBlog from "./components/NewBlog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
-import TogglableDetail from "./components/TogglableDetail";
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
@@ -54,8 +53,11 @@ const App = () => {
             {
                 blogs.sort(((a, b) => {
                     return b.likes - a.likes
-                })).map(blog =>
-                    <Blog key={blog.id} blog={blog} detail={true}/>
+                })).map(blog => {
+                        return (<Blog key={blog.id} blog={blog} user={user}
+                                      onDelete={() => setBlogs(blogs.filter((b) => b.id !== blog.id))
+                                      }/>)
+                    }
                 )
             }
         </div>

@@ -6,9 +6,15 @@ const Blog = (props) => {
 
     const [visible, setVisible] = useState(false)
 
+    let deleteVisible = false
+    if (props.user != null && blog.user != null) {
+        deleteVisible = props.user.username === blog.user.username
+    }
+
     const hideWhenVisible = {display: visible ? 'none' : ''}
     const showWhenVisible = {display: visible ? '' : 'none'}
 
+    const showWhenVisibleDeleteButton = {display: deleteVisible ? '' : 'none'}
 
     const blogStyle = {
         paddingTop: 10,
@@ -30,6 +36,12 @@ const Blog = (props) => {
         await blogService.like(newBlog)
     };
 
+    const onDelete = () => {
+        const result = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+        if (!result) return
+        blogService.deleteBlogPost(blog.id)
+        props.onDelete(blog.id)
+    }
     return (
         <div style={blogStyle}>
             <div style={hideWhenVisible}>
@@ -53,6 +65,10 @@ const Blog = (props) => {
                 <p>
                     {blog.author}
                 </p>
+
+                <div style={showWhenVisibleDeleteButton}>
+                    <button onClick={onDelete}>remove</button>
+                </div>
             </div>
         </div>
     )
