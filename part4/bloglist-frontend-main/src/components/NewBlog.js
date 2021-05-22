@@ -6,8 +6,8 @@ const NewBlog = (props) => {
     const [author, setAuthor] = useState('')
     const [url, setUrl] = useState('')
 
-    const handleCreate = async () => {
-        console.log("here")
+    const handleCreate = async (event) => {
+        event.preventDefault()
         const blog = {
             title: title,
             author: author,
@@ -15,7 +15,17 @@ const NewBlog = (props) => {
             url: url
         }
         const result = await blogsService.create(blog)
-        props.setBlogs({...props.blogs, result})
+        console.log(result)
+        if (result != null) {
+            props.setBlogs({...props.blogs, result})
+            props.setMessage({
+                type: "success",
+                messageText: `a new blog ${result.title} by ${result.author} added`
+            })
+            setTimeout(() => {
+                props.setMessage(null)
+            }, 5000)
+        }
     };
 
     return (

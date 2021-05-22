@@ -16,9 +16,6 @@ const create = async (data) => {
                 Authorization: localToken,
             }
         })
-    console.log(
-        response.status
-    )
     return response.data
 }
 

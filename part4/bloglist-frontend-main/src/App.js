@@ -4,10 +4,12 @@ import blogService from './services/blogs'
 import Login from "./components/Login";
 import Logout from "./components/Logout";
 import NewBlog from "./components/NewBlog";
+import Notification from "./components/Notification";
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
     const [user, setUser] = useState(null)
+    const [message, setMessage] = useState(null)
 
 
     useEffect(() => {
@@ -27,8 +29,9 @@ const App = () => {
     if (user === null) {
         return (
             <div>
-                <Login setUser={setUser}/>
                 <h2>Log in to application</h2>
+                <Notification message={message}/>
+                <Login setUser={setUser} setMessage={setMessage}/>
             </div>
         )
     }
@@ -36,11 +39,13 @@ const App = () => {
     return (
         <div>
             <h2>blogs</h2>
+            <Notification message={message}/>
             <p>{user.name + " logged in "}<Logout setUser={setUser}/></p>
-            <NewBlog userId={user.id} blogs={blogs} setBlogs={setBlogs}/>
-            {blogs.map(blog =>
-                <Blog key={blog.id} blog={blog}/>
-            )}
+            <NewBlog userId={user.id} blogs={blogs} setBlogs={setBlogs} setMessage={setMessage}/>
+            {
+                blogs.length ? blogs.map(blog =>
+                    <Blog key={blog.id} blog={blog}/>
+                ) : null}
         </div>
     )
 

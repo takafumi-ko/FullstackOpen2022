@@ -1,9 +1,9 @@
 import React, {useState} from 'react'
 import loginService from "../services/login";
 import blogsService from "../services/blogs";
+import login from "../services/login";
 
 const Login = (props) => {
-    const [errorMessage, setErrorMessage] = useState(null)
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
@@ -23,9 +23,13 @@ const Login = (props) => {
             blogsService.setToken(user.token)
 
         } catch (exception) {
-            setErrorMessage('Wrong credentials')
+            console.log("login fail")
+            props.setMessage({
+                type: "caution",
+                messageText: "wrong username or password"
+            })
             setTimeout(() => {
-                setErrorMessage(null)
+                props.setMessage(null)
             }, 5000)
         }
     }
