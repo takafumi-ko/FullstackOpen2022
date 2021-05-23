@@ -2,70 +2,70 @@ import React, { useState } from 'react'
 import blogsService from '../services/blogs'
 
 const NewBlog = (props) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+    const [title, setTitle] = useState('')
+    const [author, setAuthor] = useState('')
+    const [url, setUrl] = useState('')
 
-  const handleCreate = async (event) => {
-    event.preventDefault()
-    const blog = {
-      title: title,
-      author: author,
-      user: props.userId,
-      url: url
+    const handleCreate = async (event) => {
+        event.preventDefault()
+        const blog = {
+            title: title,
+            author: author,
+            user: props.userId,
+            url: url
+        }
+        const result = await blogsService.create(blog)
+        if (result !== null) {
+            props.setBlogs(props.blogs.concat(result))
+            props.setMessage({
+                type: 'success',
+                messageText: `a new blog ${result.title} by ${result.author} added`
+            })
+            setTitle('')
+            setAuthor('')
+            setUrl('')
+            setTimeout(() => {
+                props.setMessage(null)
+            }, 5000)
+            props.onCreate()
+        }
     }
-    const result = await blogsService.create(blog)
-    if (result !== null) {
-      props.setBlogs(props.blogs.concat(result))
-      props.setMessage({
-        type: 'success',
-        messageText: `a new blog ${result.title} by ${result.author} added`
-      })
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      setTimeout(() => {
-        props.setMessage(null)
-      }, 5000)
-      props.onCreate()
-    }
-  }
 
-  return (
-    <div>
-      <form onSubmit={handleCreate}>
+    return (
         <div>
-          title:
-          <input
-            type="text"
-            value={title}
-            name="Title"
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          author:
-          <input
-            type="text"
-            value={author}
-            name="Author"
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url:
-          <input
-            type="text"
-            value={url}
-            name="Url"
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
+            <form onSubmit={handleCreate}>
+                <div>
+                    title:
+                    <input
+                        type="text"
+                        value={title}
+                        name="Title"
+                        onChange={({ target }) => setTitle(target.value)}
+                    />
+                </div>
+                <div>
+                    author:
+                    <input
+                        type="text"
+                        value={author}
+                        name="Author"
+                        onChange={({ target }) => setAuthor(target.value)}
+                    />
+                </div>
+                <div>
+                    url:
+                    <input
+                        type="text"
+                        value={url}
+                        name="Url"
+                        onChange={({ target }) => setUrl(target.value)}
+                    />
+                </div>
 
-        <button type="submit">create</button>
-      </form>
-    </div>
-  )
+                <button type="submit">create</button>
+            </form>
+        </div>
+    )
 }
 
 export default NewBlog
