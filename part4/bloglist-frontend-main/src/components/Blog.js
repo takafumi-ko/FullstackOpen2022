@@ -28,14 +28,6 @@ const Blog = (props) => {
         setVisible(!visible)
     }
 
-    const AddLike = async () => {
-        let newBlog = { ...blog }
-        delete newBlog.user
-        newBlog.likes = newBlog.likes + 1
-        console.log(newBlog)
-        await blogService.like(newBlog)
-    }
-
     const onDelete = () => {
         const result = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
         if (!result) return
@@ -60,7 +52,7 @@ const Blog = (props) => {
                 </p>
                 <p>
                     {'likes ' + blog.likes}
-                    <button onClick={AddLike}>like</button>
+                    <button onClick={props.onLike}>like</button>
                 </p>
                 <p>
                     {blog.author}

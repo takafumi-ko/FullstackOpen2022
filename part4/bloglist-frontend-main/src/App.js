@@ -37,6 +37,14 @@ const App = () => {
         )
     }
 
+    const AddLike = async (blog) => {
+        let newBlog = { ...blog }
+        delete newBlog.user
+        newBlog.likes = newBlog.likes + 1
+        console.log(newBlog)
+        await blogService.like(newBlog)
+    }
+
     return (
         <div>
             <h2>blogs</h2>
@@ -58,12 +66,12 @@ const App = () => {
                         key={blog.id}
                         blog={blog}
                         user={user}
+                        onLike={AddLike(blog)}
                         onDelete={() => setBlogs(blogs.filter((b) => b.id !== blog.id))}/>
                 )
             }
         </div>
     )
-
 }
 
 export default App

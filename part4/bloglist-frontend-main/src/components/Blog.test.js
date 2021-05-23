@@ -5,6 +5,7 @@ import Blog from './Blog'
 
 describe('<Blog />', () => {
     let component
+    const mockHandler = jest.fn()
 
     beforeEach(() => {
         const blog = {
@@ -15,7 +16,7 @@ describe('<Blog />', () => {
             'likes': 7
         }
         component = render(
-            <Blog blog={blog}/>
+            <Blog blog={blog} onLike={mockHandler}/>
         )
         component.debug()
     })
@@ -53,5 +54,14 @@ describe('<Blog />', () => {
         expect(div).toHaveTextContent('React patterns')
         expect(div).toHaveTextContent('https://reactpatterns.com/')
         expect(div).toHaveTextContent('Michael Chan')
+    })
+
+    test('like button check', () => {
+
+        const button = component.getByText('like')
+        fireEvent.click(button)
+        fireEvent.click(button)
+
+        expect(mockHandler.mock.calls).toHaveLength(2)
     })
 })
