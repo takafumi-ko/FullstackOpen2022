@@ -6,6 +6,7 @@ import Logout from './components/Logout'
 import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import blogsService from './services/blogs'
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
@@ -45,6 +46,21 @@ const App = () => {
         await blogService.like(newBlog)
     }
 
+    const CreateBlog = async (blog) => {
+        const result = await blogsService.create(blog)
+        if (result !== null) {
+            setBlogs(blogs.concat(result))
+            setMessage({
+                type: 'success',
+                messageText: `a new blog ${result.title} by ${result.author} added`
+            })
+            setTimeout(() => {
+                setMessage(null)
+            }, 5000)
+            blogFormRef.current.toggleVisibility()
+        }
+    }
+
     return (
         <div>
             <h2>blogs</h2>
@@ -53,10 +69,7 @@ const App = () => {
             <Togglable buttonLabel="new blog" ref={blogFormRef}>
                 <NewBlog
                     userId={user.id}
-                    blogs={blogs}
-                    setBlogs={setBlogs}
-                    setMessage={setMessage}
-                    onCreate={() => blogFormRef.current.toggleVisibility()}/>
+                    createBlog={CreateBlog}/>
             </Togglable>
             {
                 blogs.sort(((a, b) => {

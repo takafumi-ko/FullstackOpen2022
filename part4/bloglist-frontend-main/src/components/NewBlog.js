@@ -1,34 +1,21 @@
 import React, { useState } from 'react'
-import blogsService from '../services/blogs'
 
 const NewBlog = (props) => {
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
     const [url, setUrl] = useState('')
 
-    const handleCreate = async (event) => {
-        event.preventDefault()
+    const handleCreate = () => {
         const blog = {
             title: title,
             author: author,
             user: props.userId,
             url: url
         }
-        const result = await blogsService.create(blog)
-        if (result !== null) {
-            props.setBlogs(props.blogs.concat(result))
-            props.setMessage({
-                type: 'success',
-                messageText: `a new blog ${result.title} by ${result.author} added`
-            })
-            setTitle('')
-            setAuthor('')
-            setUrl('')
-            setTimeout(() => {
-                props.setMessage(null)
-            }, 5000)
-            props.onCreate()
-        }
+        props.createBlog(blog)
+        setTitle('')
+        setAuthor('')
+        setUrl('')
     }
 
     return (
@@ -37,6 +24,7 @@ const NewBlog = (props) => {
                 <div>
                     title:
                     <input
+                        id="title"
                         type="text"
                         value={title}
                         name="Title"
@@ -46,6 +34,7 @@ const NewBlog = (props) => {
                 <div>
                     author:
                     <input
+                        id="author"
                         type="text"
                         value={author}
                         name="Author"
@@ -55,6 +44,7 @@ const NewBlog = (props) => {
                 <div>
                     url:
                     <input
+                        id="url"
                         type="text"
                         value={url}
                         name="Url"
