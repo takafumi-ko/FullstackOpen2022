@@ -40,10 +40,16 @@ const App = () => {
 
     const AddLike = async (blog) => {
         let newBlog = { ...blog }
-        delete newBlog.user
         newBlog.likes = newBlog.likes + 1
-        console.log(newBlog)
+        delete newBlog.user
+
         await blogService.like(newBlog)
+
+        setBlogs(blogs.map(b => {
+            // console.log(b)
+            console.log(blog)
+            return b.id !== blog.id ? b : { ...blog, likes: b.likes + 1 }
+        }))
     }
 
     const CreateBlog = async (blog) => {
@@ -79,7 +85,7 @@ const App = () => {
                         key={blog.id}
                         blog={blog}
                         user={user}
-                        onLike={AddLike(blog)}
+                        onLike={() => AddLike(blog)}
                         onDelete={() => setBlogs(blogs.filter((b) => b.id !== blog.id))}/>
                 )
             }

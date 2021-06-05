@@ -41,9 +41,14 @@ describe('Blog app', function () {
     describe('When logged in', function () {
         beforeEach(function () {
             cy.login({ username: 'mluukkai', password: 'salainen' })
+            cy.createBlog({
+                title: 'title1',
+                author: 'author1',
+                url: 'url1'
+            })
         })
 
-        it.only('A blog can be created', function () {
+        it('A blog can be created', function () {
             cy.contains('new blog').click()
             cy.get('#title').type('title sample')
             cy.get('#author').type('author sample')
@@ -53,6 +58,15 @@ describe('Blog app', function () {
             cy.contains('title sample')
             cy.contains('author sample')
             cy.contains('url sample')
+        })
+
+        it.only('5.20 can like', function () {
+            cy.contains('view').click()
+            cy.contains('likes 0')
+            cy.contains('like').click()
+            cy.contains('likes 1')
+            cy.contains('like').click()
+            cy.contains('likes 2')
         })
     })
 })
