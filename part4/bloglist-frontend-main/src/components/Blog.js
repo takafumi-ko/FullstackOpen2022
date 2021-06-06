@@ -50,7 +50,7 @@ const Blog = (props) => {
                 <p>
                     {blog.url}
                 </p>
-                <p>
+                <p className='likes'>
                     {'likes ' + blog.likes}
                     <button onClick={props.onLike}>like</button>
                 </p>
