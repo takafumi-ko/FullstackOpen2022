@@ -2,12 +2,12 @@ describe('Blog app', function () {
     beforeEach(function () {
         cy.request('POST', 'http://localhost:3003/api/testing/reset')
 
-        const user = {
+        cy.createUser({
             name: 'Matti Luukkainen',
             username: 'mluukkai',
             password: 'salainen'
-        }
-        cy.request('POST', 'http://localhost:3003/api/users', user)
+        })
+
         cy.visit('http://localhost:3000')
     })
 
@@ -42,9 +42,9 @@ describe('Blog app', function () {
         beforeEach(function () {
             cy.login({ username: 'mluukkai', password: 'salainen' })
             cy.createBlog({
-                title: 'title1',
-                author: 'author1',
-                url: 'url1'
+                title: 'title',
+                author: 'author',
+                url: 'url'
             })
         })
 
@@ -60,13 +60,23 @@ describe('Blog app', function () {
             cy.contains('url sample')
         })
 
-        it.only('5.20 can like', function () {
-            cy.contains('view').click()
+        it('5.20 can like', function () {
+            cy.contains('title author').contains('view').click()
             cy.contains('likes 0')
             cy.contains('like').click()
             cy.contains('likes 1')
             cy.contains('like').click()
             cy.contains('likes 2')
+        })
+
+        it.only('5.21 can delete', function () {
+            cy.contains('title author').contains('view').click()
+            cy.contains('remove').click({ force: true })
+            cy.on('window:confirm', (message) => {
+                expect(message).to.equal('Remove blog title by author')
+            })
+
+            cy.get('html').should('not.contain', 'view')
         })
     })
 })
