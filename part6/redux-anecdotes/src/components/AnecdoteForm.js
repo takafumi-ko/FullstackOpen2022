@@ -31,7 +31,7 @@ const mapDispatchToProps = dispatch => {
         createAnecdote: value => {
             dispatch(createAnecdote(value))
             dispatch(setNotificationS(`new anecdote '${value}'`, 10))
-        },
+        }
     }
 }
 

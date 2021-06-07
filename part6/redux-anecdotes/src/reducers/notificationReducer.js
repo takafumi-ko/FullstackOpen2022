@@ -11,11 +11,11 @@ const notificationReducer = (state = '', action) => {
 
 export const setNotificationS = (message, time) => {
     return async dispatch => {
-        await dispatch({
+        dispatch({
             type: 'SET',
             data: { message }
         })
-        await setTimeout(() => {
+        setTimeout(() => {
             dispatch(clearNotification())
         }, time * 1000)
     }
