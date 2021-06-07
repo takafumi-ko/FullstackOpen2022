@@ -29,7 +29,7 @@ const anecdoteReducer = (state = initialState, action) => {
                 votes: anecdote.votes + 1
             })
         case 'NEW_ANECDOTE':
-            return state.concat(asObject(action.data.anecdote))
+            return state.concat(action.data.anecdote)
         case 'INIT':
             return action.data.anecdotes
         default:
