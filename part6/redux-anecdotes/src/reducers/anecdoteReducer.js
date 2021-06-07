@@ -26,10 +26,7 @@ const anecdoteReducer = (state = initialState, action) => {
     console.log('action', action)
     switch (action.type) {
         case'VOTE':
-            return state.map(anecdote => anecdote.id !== action.data.id ? anecdote : {
-                ...anecdote,
-                votes: anecdote.votes + 1
-            })
+            return state.map(anecdote => anecdote.id !== action.data.anecdote.id ? anecdote : action.data.anecdote)
         case 'NEW_ANECDOTE':
             return state.concat(action.data.anecdote)
         case 'INIT':
@@ -59,9 +56,12 @@ export const createAnecdote = (content) => {
 }
 
 export const incrementVote = (id) => {
-    return {
-        type: "VOTE",
-        data: { id }
+    return async dispatch => {
+        const anecdote = await anecdoteService.voteAnecdote(id)
+        dispatch({
+            type: "VOTE",
+            data: { anecdote }
+        })
     }
 }
 
