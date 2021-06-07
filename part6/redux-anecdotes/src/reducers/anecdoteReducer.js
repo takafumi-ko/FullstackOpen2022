@@ -30,10 +30,19 @@ const anecdoteReducer = (state = initialState, action) => {
             })
         case 'NEW_ANECDOTE':
             return state.concat(asObject(action.data.anecdote))
+        case 'INIT':
+            return action.data.anecdotes
         default:
             return state
     }
 }
+export const initializeAnecdotes = (anecdotes) => {
+    return {
+        type: 'INIT',
+        data: { anecdotes }
+    }
+}
+
 export const createAnecdote = (anecdote) => {
     return {
         type: 'NEW_ANECDOTE',
