@@ -1,5 +1,6 @@
 const express = require('express');
 const { Todo } = require('../mongo')
+const {log} = require("debug");
 const router = express.Router();
 
 /* GET todos listing. */
@@ -22,9 +23,10 @@ const singleRouter = express.Router();
 const findByIdMiddleware = async (req, res, next) => {
   const { id } = req.params
   req.todo = await Todo.findById(id)
+
   if (!req.todo) return res.sendStatus(404)
 
-  next()
+  res.send(req.todo);
 }
 
 /* DELETE todo. */
