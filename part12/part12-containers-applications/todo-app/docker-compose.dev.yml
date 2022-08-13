@@ -3,14 +3,21 @@ services:
     image: todo-front-dev
     build:
       context: ./todo-frontend
-      dockerfile: ./todo-frontend/dev.Dockerfile
+      dockerfile: dev.Dockerfile
     volumes:
       - ./todo-frontend/:/usr/src/app
     ports:
       - 3000:3000
+    environment:
+      REACT_APP_BACKEND_URL: http://localhost:8080/api
     container_name: todo-front
+    depends_on:
+      - server
   server:
     image: todo-backend-dev
+    build:
+      context: ./todo-backend
+      dockerfile: dev.Dockerfile
     volumes:
       - ./todo-backend:/usr/src/app
     ports:
@@ -51,4 +58,3 @@ services:
     container_name: reverse-proxy
     depends_on:
       - app
-      - server
